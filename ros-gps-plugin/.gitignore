@@ -30,12 +30,3 @@
 *.exe
 *.out
 *.app
-
-# Build folder
-**/build/*
-
-# Develop files
-*.kdev4
-
-# Lyx files
-*.lyx~
