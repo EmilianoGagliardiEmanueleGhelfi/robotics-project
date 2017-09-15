@@ -1,0 +1,538 @@
+<?xml version='1.0'?>
+<sdf version='1.4'>
+	<model name="pallet_jack">
+		<static>false</static>
+
+		<!-- CHASSIS -->
+		<link name='chassis'>
+			<pose>0 0 0 0 0 0</pose>
+
+			<collision name='center_collision'>
+				<pose>.4475 0 .075 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.11  .6 .05</size> <!-- x = .1 + .01 avoid collision between front and lift-->
+					</box>
+				</geometry>
+			</collision>
+
+			<visual name='center_visual'>
+				<pose>.4475 0 .075 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.11 .6 .05</size>
+					</box>
+				</geometry>
+			</visual>
+
+
+			<collision name='left_collision'>
+				<pose>-.1526 -.225 .075 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>1.1 .15 .05</size>
+					</box>
+				</geometry>
+			</collision>
+
+			<visual name='left_visual'>
+				<pose>-.1526 -.225 .075 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>1.1 .15 .05</size>
+					</box>
+				</geometry>
+			</visual>
+
+			<collision name='right_collision'>
+				<pose>-.1526 .225 .075 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>1.1 .15 .05</size>
+					</box>
+				</geometry>
+			</collision>
+
+			<visual name='right_visual'>
+				<pose>-.1526 .225 .075 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>1.1 .15 .05</size>
+					</box>
+				</geometry>
+			</visual>
+
+			<collision name = "front_collision">
+				<pose>.53 0 .16 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.05 .2 .22</size>
+					</box>
+				</geometry>
+			</collision>
+
+			<visual name = "front_visual">
+				<pose>.53 0 .16 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.05 .2 .22</size>
+					</box>
+				</geometry>
+			</visual>
+
+			<collision name = "front_up_collision">
+				<pose>.655 0 .245 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.2 .2 .05</size>
+					</box>
+				</geometry>
+			</collision>
+
+			<visual name = "front_up_visual">
+				<pose>.655 0 .245 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.2 .2 .05</size>
+					</box>
+				</geometry>
+			</visual>
+
+			<!-- Intertia values -->
+			<inertial>
+				<mass>100</mass>
+			</inertial>
+		</link>
+
+		<!--LIFT-->
+		<link name = "lift">
+			<pose> 0 0 .125 0 0 0</pose> <!--z pose: 0.1 + 0.04/2 + 0,005 to avoid chassis collision-->
+			<collision name='center_lift_collision'>
+				<pose>.447 0 0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.1 .6 .04</size>
+					</box>
+				</geometry>
+			</collision>
+
+			<visual name='center_lift_visual'>
+				<pose>.447 0 0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.1 .6 .04</size>
+					</box>
+				</geometry>
+			</visual>
+
+
+			<collision name='left_lift_collision'>
+				<pose>-.1526 -.225 0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>1.1 .15 .04</size>
+					</box>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>1000000000</mu>
+							<mu2>1000000000</mu2>
+							<slip1>0</slip1>
+							<slip2>0</slip2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+
+			<visual name='left_lift_visual'>
+				<pose>-.1526 -.225 0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>1.1 .15 .04</size>
+					</box>
+				</geometry>
+			</visual>
+
+			<collision name='right_lift_collision'>
+				<pose>-.1526 .225 0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>1.1 .15 .04</size>
+					</box>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>1000000000</mu>
+							<mu2>1000000000</mu2>
+							<slip1>0</slip1>
+							<slip2>0</slip2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+
+			<visual name='right_lift_visual'>
+				<pose>-.1526 .225 0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>1.1 .15 .04</size>
+					</box>
+				</geometry>
+			</visual>
+
+			<!-- Intertia values -->
+			<inertial>
+				<mass>50</mass>
+			</inertial>
+
+			<!-- laser sensor is solidal to the lift -->
+			<!-- it was gpu_ray -->
+			<sensor type="ray" name="head_hokuyo_sensor">
+				<pose>.5 0 .06 0 0 3.14</pose>
+				<visualize>true</visualize>
+				<update_rate>40</update_rate>
+				<ray>
+					<scan>
+						<horizontal>
+							<samples>720</samples>
+							<resolution>1</resolution>
+							<min_angle>-1.0472</min_angle>
+							<max_angle>1.0472</max_angle>
+						</horizontal>
+					</scan>
+					<range>
+						<min>0.01</min>
+						<max>.6</max>
+						<resolution>0.01</resolution>
+					</range>
+					<noise>
+						<type>gaussian</type>
+						<!-- Noise parameters based on published spec for Hokuyo laser
+						achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+						stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+						reading. -->
+						<mean>0.0</mean>
+						<stddev>0.01</stddev>
+					</noise>
+				</ray>
+				<plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+					<topicName>/pallet_jack/laser/scan</topicName>
+					<frameName>chassis</frameName>
+				</plugin>
+				<plugin name = "laser_plugin" filename = "liblaser_plugin.so"/>
+			</sensor>
+		</link>
+
+		<!--BACK LEFT WHEEL-->
+		<link name = "back_left_wheel">
+			<pose>-.6 -.317 .04 0 1.5707 1.5707</pose>
+			<collision name = "back_left_wheel_collision">
+				<geometry>
+					<cylinder>
+						<radius>.04</radius>
+						<length>.03</length>
+					</cylinder>
+				</geometry>
+			</collision>
+
+			<visual name = "back_left_wheel_visual">
+				<geometry>
+					<cylinder>
+						<radius>.04</radius>
+						<length>.03</length>
+					</cylinder>
+				</geometry>
+			</visual>
+			<!-- Intertia values -->
+			<inertial>
+				<mass>5</mass>
+			</inertial>
+		</link>
+
+		<!--BACK RIGHT WHEEL-->
+		<link name = "back_right_wheel">
+			<pose>-.6 .317 .04 0 1.5707 1.5707</pose>
+			<collision name = "back_right_wheel_collision">
+				<geometry>
+					<cylinder>
+						<radius>.04</radius>
+						<length>.03</length>
+					</cylinder>
+				</geometry>
+			</collision>
+
+			<visual name = "back_right_wheel_visual">
+				<geometry>
+					<cylinder>
+						<radius>.04</radius>
+						<length>.03</length>
+					</cylinder>
+				</geometry>
+			</visual>
+
+			<!-- Intertia values -->
+			<inertial>
+				<mass>5</mass>
+			</inertial>
+		</link>
+		<!-- Wheel sources of movement -->
+
+		<!--CENTER RIGHT WHEEL-->
+		<link name = "center_right_wheel">
+			<pose>.67 .05 .1 0 1.5707 1.5707</pose>
+			<collision name = "center_right_wheel_collision">
+				<geometry>
+					<cylinder>
+						<radius>.1</radius>
+						<length>.025</length>
+					</cylinder>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>10000000000</mu>
+							<mu2>10000000000</mu2>
+							<slip1>0</slip1>
+							<slip2>0</slip2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+
+			<visual name = "center_right_wheel_visual">
+				<geometry>
+					<cylinder>
+						<radius>.1</radius>
+						<length>.025</length>
+					</cylinder>
+				</geometry>
+			</visual>
+
+			<!-- Intertia values -->
+			<inertial>
+				<mass>10</mass>
+			</inertial>
+		</link>
+
+		<!--CENTER LEFT WHEEL-->
+		<link name = "center_left_wheel">
+			<pose>.67 -.05 .1 0 1.5707 1.5707</pose>
+			<collision name = "center_left_wheel_collision">
+				<geometry>
+					<cylinder>
+						<radius>.1</radius>
+						<length>.025</length>
+					</cylinder>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>10000000000</mu>
+							<mu2>10000000000</mu2>
+							<slip1>0</slip1>
+							<slip2>0</slip2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+
+			<visual name = "center_left_wheel_visual">
+				<geometry>
+					<cylinder>
+						<radius>.1</radius>
+						<length>.025</length>
+					</cylinder>
+				</geometry>
+			</visual>
+
+			<!-- Intertia values -->
+			<inertial>
+				<mass>10</mass>
+			</inertial>
+		</link>
+
+		<!-- this is a dummy link that is used in order to obtain 2 DOF
+			 between the chassis and the center wheel -->
+		<link name = "dummy_link">
+			<pose>.67 0 .1 0 0 0</pose>
+		</link>
+
+		<!-- Camera -->
+		<link name="camera_link">
+			<pose>.76 0 .295 0 0 0</pose>
+			<collision name="camera_collision">
+				<geometry>
+					<box>
+						<size>0.05 0.05 0.05</size>
+					</box>
+				</geometry>
+			</collision>
+
+			<visual name="camera_visual">
+				<geometry>
+					<box>
+						<size>0.05 0.05 0.05</size>
+					</box>
+				</geometry>
+			</visual>
+
+			<sensor type="camera" name="camera1">
+				<update_rate>30.0</update_rate>
+				<camera name="head">
+					<horizontal_fov>1.3962634</horizontal_fov>
+					<image>
+						<width>800</width>
+						<height>800</height>
+						<format>R8G8B8</format>
+					</image>
+					<clip>
+						<near>0.02</near>
+						<far>300</far>
+					</clip>
+				</camera>
+		        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+		          <alwaysOn>true</alwaysOn>
+		          <updateRate>0.0</updateRate>
+		          <cameraName>pallet_jack/camera</cameraName>
+		          <imageTopicName>image_raw</imageTopicName>
+		          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+		          <frameName>camera_link</frameName>
+		          <hackBaseline>0.07</hackBaseline>
+		          <distortionK1>0.0</distortionK1>
+		          <distortionK2>0.0</distortionK2>
+		          <distortionK3>0.0</distortionK3>
+		          <distortionT1>0.0</distortionT1>
+		          <distortionT2>0.0</distortionT2>
+		        </plugin>
+			</sensor>
+		</link>
+
+		<!--CHASSIS BACK RIGHT WHEEL JOINT-->
+		<joint type = "revolute" name = "chassis_backright_joint">
+			<pose>0 0 0 0 0 0</pose>
+			<child>back_right_wheel</child>
+			<parent>chassis</parent>
+			<axis>
+			 	<xyz>0 1 0</xyz>
+			 	<dynamics>
+            		<friction>0</friction>
+            		<damping>0</damping>
+        		</dynamics>
+			</axis>
+
+		</joint>
+
+		<!--CHASSIS BACK LEFT WHEEL JOINT-->
+		<joint type = "revolute" name = "chassis_backleft_joint">
+			<pose>0 0 0 0 0 0</pose>
+			<child>back_left_wheel</child>
+			<parent>chassis</parent>
+			<axis>
+			 	<xyz>0 1 0</xyz>
+			 	<dynamics>
+            		<friction>0</friction>
+            		<damping>0</damping>
+        		</dynamics>
+			</axis>
+		</joint>
+
+		<!--CHASSIS CENTER WHEEL JOINT-->
+		
+		<joint type = "revolute" name = "chassis_dummy_joint">
+			<pose>0 0 0 0 0 0</pose>
+			<child>dummy_link</child>
+			<parent>chassis</parent>
+			<axis>
+				<xyz>0 0 1</xyz>
+        		<use_parent_model_frame>0</use_parent_model_frame>
+        		<limit>
+          			<lower>-1.5707</lower>
+          			<upper>1.5707</upper>
+        		</limit>
+        		<dynamics>
+            		<friction>2</friction>
+            		<damping>0</damping>
+        		</dynamics>
+			</axis>
+		</joint>
+
+		<!-- JOINTS BETWEEN WHEELS AND DUMMY LINK -->
+		<joint type = "revolute" name = "dummy_centerL_joint">
+			<pose>0 0 0 0 0 0</pose>
+			<child>center_left_wheel</child>
+			<parent>dummy_link</parent>
+			<axis>
+			 	<xyz>0 0 1</xyz>
+        		<use_parent_model_frame>0</use_parent_model_frame>
+			</axis>
+		</joint>
+
+		<joint type = "revolute" name = "dummy_centerR_joint">
+			<pose>0 0 0 0 0 0</pose>
+			<child>center_right_wheel</child>
+			<parent>dummy_link</parent>
+			<axis>
+			 	<xyz>0 0 1</xyz>
+        		<use_parent_model_frame>0</use_parent_model_frame>
+			</axis>	
+		</joint>
+
+		<!-- JOINT BETWEEN CHASSIS AND LIFT-->
+		<joint type = "prismatic" name = "chassis_lift_joint">
+			<pose> 0 0 0.1 0 0 0 </pose><!--z was 0.1-->
+			<child>lift</child>
+			<parent>chassis</parent>
+			<axis>
+			 	<xyz>0 0 1</xyz>
+        		<use_parent_model_frame>0</use_parent_model_frame>
+        		<limit>
+        			<lower>.0</lower>
+        			<upper>0.5</upper>
+        			<effort>100000</effort>
+        		</limit>
+
+        		<dynamics>
+        			<!-- it was 50 -->
+            <damping>500</damping>
+          </dynamics>
+			</axis>	
+
+			<physics>
+          <ode>
+            <implicit_spring_damper>1</implicit_spring_damper>
+          </ode>
+        </physics>
+		</joint>
+
+		<!-- CAMERA -->
+		<joint name="camera_joint" type="fixed">
+			<pose>0 0 0 0 0 0</pose>
+		    <axis><xyz>0 0 0 </xyz></axis>
+		    <parent>chassis</parent>
+		    <child>camera_link</child>
+		</joint>
+
+		<plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+          <alwaysOn>true</alwaysOn>
+          <updateRate>10</updateRate>
+          <leftJoint>dummy_centerL_joint</leftJoint>
+          <rightJoint>dummy_centerR_joint</rightJoint>
+          <wheelSeparation>0.1</wheelSeparation>
+          <wheelDiameter>0.2</wheelDiameter>
+      	  <wheelTorque>2.5</wheelTorque>
+          <torque>200000</torque>
+          <commandTopic>cmd_vel</commandTopic>
+          <odometryTopic>odom</odometryTopic>
+          <odometryFrame>odom</odometryFrame>
+          <robotBaseFrame>base_footprint</robotBaseFrame>
+          <legacyMode>false</legacyMode>
+      </plugin>
+
+	<!-- Lift Plugin -->
+	<plugin name="lift_plugin" filename="liblift_plugin.so">
+	</plugin>
+
+	</model>
+</sdf>
